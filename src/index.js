@@ -1,17 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+var onClick = function() {
+    var value = this.getAttribute("value");
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+    let params = {
+        active: true,
+        currentWindow: true,
+    }
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+
+    chrome.tabs.query(params, (tabs) => {
+        const msg = {
+            type: "action",
+            value,
+        }
+        chrome.tabs.sendMessage(tabs[0].id, msg)
+    })
+};
+
+var buttons = document.getElementsByClassName("action-button");
+
+for (var i = 0; i < buttons.length; i++) {
+    buttons[i].addEventListener('click', onClick, false);
+}
